@@ -7,9 +7,17 @@ const mongoose = require('mongoose');
 // this module
 const should = chai.should();
 
-const {Restaurant} = require('../models');
-const {app, runServer, closeServer} = require('../server');
-const {TEST_DATABASE_URL} = require('../config');
+const {
+  Restaurant
+} = require('../models');
+const {
+  app,
+  runServer,
+  closeServer
+} = require('../server');
+const {
+  TEST_DATABASE_URL
+} = require('../config');
 
 chai.use(chaiHttp);
 
@@ -18,11 +26,11 @@ chai.use(chaiHttp);
 // we use the Faker library to automatically
 // generate placeholder values for author, title, content
 // and then we insert that data into mongo
-function seedRestaurantData() {
+function seedRestaurantData() { //like a beforeEach()
   console.info('seeding restaurant data');
   const seedData = [];
 
-  for (let i=1; i<=10; i++) {
+  for (let i = 1; i <= 10; i++) {
     seedData.push(generateRestaurantData());
   }
   // this will return a promise
@@ -32,7 +40,8 @@ function seedRestaurantData() {
 // used to generate data to put in db
 function generateBoroughName() {
   const boroughs = [
-    'Manhattan', 'Queens', 'Brooklyn', 'Bronx', 'Staten Island'];
+    'Manhattan', 'Queens', 'Brooklyn', 'Bronx', 'Staten Island'
+  ];
   return boroughs[Math.floor(Math.random() * boroughs.length)];
 }
 
@@ -72,11 +81,11 @@ function generateRestaurantData() {
 
 // this function deletes the entire database.
 // we'll call it in an `afterEach` block below
-// to ensure  ata from one test does not stick
+// to ensure data from one test does not stick
 // around for next one
-function tearDownDb() {
-    console.warn('Deleting database');
-    return mongoose.connection.dropDatabase();
+function tearDownDb() { //like afterEach()
+  console.warn('Deleting database');
+  return mongoose.connection.dropDatabase();
 }
 
 describe('Restaurants API resource', function() {
@@ -85,19 +94,19 @@ describe('Restaurants API resource', function() {
   // otherwise we'd need to call a `done` callback. `runServer`,
   // `seedRestaurantData` and `tearDownDb` each return a promise,
   // so we return the value returned by these function calls.
-  before(function() {
+  before(function() { //routine responsible for starting the server. we only need to do this once, before all the tests in the module are run.
     return runServer(TEST_DATABASE_URL);
   });
 
-  beforeEach(function() {
+  beforeEach(function() { // routine seeds our database with test data before each test runs.
     return seedRestaurantData();
   });
 
-  afterEach(function() {
+  afterEach(function() { //routine zeroes out the database after each test has run.
     return tearDownDb();
   });
 
-  after(function() {
+  after(function() { //routine calls closeServer() after all the tests in this module have run. 
     return closeServer();
   })
 
@@ -241,7 +250,7 @@ describe('Restaurants API resource', function() {
           restaurant.name.should.equal(updateData.name);
           restaurant.cuisine.should.equal(updateData.cuisine);
         });
-      });
+    });
   });
 
   describe('DELETE endpoint', function() {
